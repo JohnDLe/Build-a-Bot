@@ -10,7 +10,7 @@
             <img :src="selectedRobot.leftArm.src" class="rotate-left"/>
             <img :src="selectedRobot.torso.src"/>
             <img :src="selectedRobot.rightArm.src" class="rotate-right"/>
-          </div>        
+          </div>  
           <div class="bottom-row">
             <img :src="selectedRobot.base.src"/>
           </div>
@@ -74,6 +74,16 @@ import CollapsibleSection from '../shared/CollapsibleSection.vue';
 
 export default {
   name: 'RobotBuilder',
+  beforeRouteLeave(to, from, next) {
+    if (this.addedToCart) {
+      next(true);
+    } else {
+      /* eslint no-alert: 0 */
+      /* eslint no-restricted-globals: 0 */
+      const response = confirm('You have not added your robot to your cart, are you sure  you want to leave?');
+      next(response);
+    }
+  },
   components: { PartSelector, CollapsibleSection },
   // created() {
   //   console.log('component created');
@@ -81,6 +91,7 @@ export default {
   data() {
     return {
       availableParts,
+      addedToCart: false,
       cart: [],
       selectedRobot: {      
         head: {},
@@ -118,6 +129,7 @@ export default {
         + robot.rightArm.cost
         + robot.base.cost;
       this.cart.push(Object.assign({}, robot, { cost }));
+      this.addedToCart = true;
     },
     // selectNextHead() {
     //   this.selectedHeadIndex = getNextValidIndex(this.selectedHeadIndex,
